@@ -12,24 +12,19 @@ int main(int argc, char** argv)
     int width = 50;
     int height = 50;
     SquareGrid::Location start {1, 1};
-    SquareGrid::Location destination {48, 48};
+    SquareGrid::Location destination {width - 2, height - 2};
     unordered_map<SquareGrid::Location, SquareGrid::Location> came_from;
     unordered_map<SquareGrid::Location, double> cost_so_far;
     GridWithWeights grid(width, height);
     int x, y;
-    for (int i=0; i<30; i++)
+    for (int i=0; i<height/3*2; i++)
     {
-        grid.walls.insert((SquareGrid::Location {10, i}));
+        grid.walls.insert((SquareGrid::Location {width/3, i}));
     }
-    for (int i=20; i<50; i++)
+    for (int i=height/3; i<height; i++)
     {
-        grid.walls.insert((SquareGrid::Location {40, i}));
+        grid.walls.insert((SquareGrid::Location {width/3*2, i}));
     }
-//    grid.walls.insert(SquareGrid::Location {10, 8});
-//    grid.walls.insert(SquareGrid::Location {10, 9});
-//    grid.walls.insert(SquareGrid::Location {10, 10});
-//    grid.walls.insert(SquareGrid::Location {10, 11});
-//    grid.walls.insert(SquareGrid::Location {10, 12});
     a_star_search(grid, start, destination, came_from, cost_so_far);
     vector<SquareGrid::Location> path = reconstruct_path(start, destination, came_from);
     if (path.empty())
@@ -42,5 +37,6 @@ int main(int argc, char** argv)
         cout << "[" << std::get<0>(path[i]) << ", " << std::get<1>(path[i]) << "]";
     }
     cout << endl;
+    cout << "Path length: " << path.size() << endl;
     Utils::toJsonFile("out.txt", height, width, path, start, destination, grid.walls);
 }
